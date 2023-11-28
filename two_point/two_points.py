@@ -2,59 +2,56 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import os
+import random
 
-
-def plot_all(file, name, folder, log_plot:bool = False):
+def plot_all(file, name, folder, log_plot: bool = False):
     with open(folder + file, "r") as file:
         lines = file.readlines()
 
     # Create DataFrames
-    header_part1 = lines[8].split()[
-        :4
-    ]  # Extract the first four columns from the header line
-    data_part = pd.DataFrame(
-        [line.split()[:4] for line in lines[:9]], columns=header_part1
-    )
-    data_part1 = pd.DataFrame(
-        {
-            "Setup Title": [data_part["IG"][0]],
-            "Application": [data_part["ID"][1]],
-            "Application Name": [data_part["VG"][1]],
-            "Test Date": [data_part["IG"][2]],
-            "Test Time": [data_part["IG"][3]],
-            "Device ID": [data_part["IG"][4]],
-            "Count": [data_part["ID"][5]],
-            "Name": [data_part["VD"][7]],
-            "Polarity": [data_part["ID"][7]],
-            "Humidity": [data_part["IG"][7]],
-            "W": [data_part["VG"][7]],
-        }
-    )
+    header_part1 = lines[8].split()[:4]
+    data_part = pd.DataFrame([line.split()[:4] for line in lines[:9]], columns=header_part1)
+    data_part1 = pd.DataFrame({
+        "Setup Title": [data_part["IG"][0]],
+        "Application": [data_part["ID"][1]],
+        "Application Name": [data_part["VG"][1]],
+        "Test Date": [data_part["IG"][2]],
+        "Test Time": [data_part["IG"][3]],
+        "Device ID": [data_part["IG"][4]],
+        "Count": [data_part["ID"][5]],
+        "Name": [data_part["VD"][7]],
+        "Polarity": [data_part["ID"][7]],
+        "Humidity": [data_part["IG"][7]],
+        "W": [data_part["VG"][7]],
+    })
     data_part2 = pd.DataFrame(
         [line.split() for line in lines[11:]],
         columns=["VD", "ID", "IG", "VG", "VS", "IS"],
     )
-    # Plot IV vs ID
+
+    # Plot IV vs ID with random color
     data_part2 = data_part2.apply(pd.to_numeric, errors="coerce")
-    print(data_part2)
-    plt.figure()  # Create a new figure
     plt.plot(
         data_part2["VD"],
         data_part2["ID"],
         label="ID vs VD",
         marker="s",
         linestyle="-",
-        color="r",
+        color=get_random_color(),
     )
+
     if log_plot:
-        plt.yscale('log')  # Make x-axis logarithmic
+        plt.yscale("log")
 
     plt.xlabel("VD (V)")
     plt.ylabel("ID (A)")
     plt.title("VD vs ID Plot")
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(os.path.join(folder, name + ".png"))
+
+def get_random_color():
+    # Generate a random color in the format "#RRGGBB"
+    return "#{:02x}{:02x}{:02x}".format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 
 class TwoPoints:
