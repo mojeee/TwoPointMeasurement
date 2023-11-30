@@ -74,5 +74,5 @@ class DiodeMeas:
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()
         plt.savefig(os.path.join(self.folder_path, 'all_fig' + ".png"))
-        #plt.show()
+        plt.show()
 
