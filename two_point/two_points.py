@@ -79,7 +79,7 @@ class TwoPoints:
 
         return data
 
-    def _plot_all(self, data, name, log_plot: bool = False, save_fig: bool = False):
+    def _plot_all(self, data, name, save_fig: bool = False):
         if self.seperate_plot:
             plt.figure()
 
@@ -92,8 +92,8 @@ class TwoPoints:
             color=get_random_color(),
         )
 
-        if log_plot:
-            plt.yscale("log")
+        
+        #plt.yscale("log")
 
         plt.xlabel("VD (V)")
         plt.ylabel("ID (A)")
