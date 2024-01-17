@@ -165,6 +165,37 @@ class Inverter:
                 self.ax.set_title("Vout vs Vin Plot")
                 self.ax.grid(True, linestyle="--", alpha=0.7)
                 self.fig.tight_layout()
+        elif index > 0:
+            self.fig, self.ax = plt.subplots()
+            if self.gain_plot:
+                self.ax.plot(
+                    data["Vin"],
+                    data["Vout/Vin"],
+                    label="Vout/Vin vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                self.ax.set_xlabel("Vin (V)")
+                self.ax.set_ylabel("Vout/Vin (V)")
+                self.ax.set_title("Vout/Vin vs Vin Plot")
+                self.ax.grid(True, linestyle="--", alpha=0.7)
+                self.fig.tight_layout()
+                
+            else: 
+                self.ax.plot(
+                    data["Vin"],
+                    data["Vout"],
+                    label="Vout vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                self.ax.set_xlabel("Vin (V)")
+                self.ax.set_ylabel("Vout (V)")
+                self.ax.set_title("Vout vs Vin Plot")
+                self.ax.grid(True, linestyle="--", alpha=0.7)
+                self.fig.tight_layout()
 
 
         
