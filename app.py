@@ -40,13 +40,14 @@ def main():
             st.subheader("Uploaded File Details:")
             file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type, "FileSize": uploaded_file.size}
             #st.write(file_details)
+            summary_plot = st.sidebar.checkbox('Summary Plot')
+            seperate_plot = st.sidebar.checkbox('Seperate Plot')
+            gain_plot = st.sidebar.checkbox('Gain Plot')
 
             # Call the function to unzip and display files
             zip_file_folder_path = unzip_and_display_files(uploaded_file)
             st.write(zip_file_folder_path)
-            summary_plot = st.sidebar.checkbox('Summary Plot')
-            seperate_plot = st.sidebar.checkbox('Seperate Plot')
-            gain_plot = st.sidebar.checkbox('Gain Plot')
+            
             inverterplot = Inverter(
             folder_path=zip_file_folder_path
             )
