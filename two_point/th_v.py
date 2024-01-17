@@ -18,6 +18,7 @@ class FindVth:
     def __init__(self, folder_path):
         st.title("Find Threshold Voltage")
         self.folder_path = folder_path
+        print(self.folder_path)
         try:
             # Get all file names in the folder
             self.file_names = [
@@ -54,7 +55,7 @@ class FindVth:
                 thershold_voltage.append(self._find_v_thershold(data=data))
         else:
             print(f"No files ending with '{target_ending}' found in the folder.")
-
+        #print(data)
         # Calculate mean and variance
             #shift mean to 0.1 to avoid negative values
         thershold_voltage = np.array(thershold_voltage) + 0.015
