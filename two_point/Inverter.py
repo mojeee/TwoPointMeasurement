@@ -112,9 +112,9 @@ class Inverter:
                 linestyle="-",
                 color=get_random_color(),
             )
-            ax.xlabel("Vin (V)")
-            ax.ylabel("Vout/Vin (V)")
-            ax.title("Vout/Vin vs Vin Plot")
+            ax.set_xlabel("Vin (V)")
+            ax.set_ylabel("Vout/Vin (V)")
+            ax.set_title("Vout/Vin vs Vin Plot")
         else: 
             ax.plot(
                 data["Vin"],
@@ -124,9 +124,9 @@ class Inverter:
                 linestyle="-",
                 color=get_random_color(),
             )
-            ax.xlabel("Vin (V)")
-            ax.ylabel("Vout (V)")
-            ax.title("Vout vs Vin Plot")
+            ax.set_xlabel("Vin (V)")
+            ax.set_ylabel("Vout (V)")
+            ax.set_title("Vout vs Vin Plot")
 
         
         #plt.yscale("log")
@@ -159,13 +159,13 @@ class Inverter:
             label="Std Dev",
         )
 
-        ax.xlabel("Vin (V)")
+        ax.set_xlabel("Vin (V)")
         if self.gain_plot:
-            ax.ylabel("Vout/Vin (V)")
-            ax.title("Mean Vout/Vin with Std Dev Plot")
+            ax.set_ylabel("Vout/Vin (V)")
+            ax.set_title("Mean Vout/Vin with Std Dev Plot")
         else:
-            ax.ylabel("Vout (V)")
-            ax.title("Mean Vout with Std Dev Plot")
+            ax.set_ylabel("Vout (V)")
+            ax.set_title("Mean Vout with Std Dev Plot")
 
         ax.grid(True, linestyle="--", alpha=0.7)
         ax.legend()
