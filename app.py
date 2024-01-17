@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from two_point.logicgate import LogicGates
+from two_point.inverterpulldown import InverterDataProcessor
 from two_point.th_v import FindVth
 import zipfile
 import os
@@ -27,9 +28,9 @@ def delete_temporary_files(folder_path):
     shutil.rmtree(folder_path)
 
 def main():
-    st.title("Your Streamlit Application")
+    st.title("KIT INT Application")
 
-    report_type = st.sidebar.selectbox("Select a Report Type", ("Logic Gates", "Thershhold Voltage", "Inverter Pull Down","Inverter Pull Up","Ioffmean","Ioff"))
+    report_type = st.sidebar.selectbox("Select a Report Type", ("Logic Gates", "Thershhold Voltage", "Inverter Pull Up an Down","Ioffmean","Ioff"))
 
     if report_type == "Logic Gates":
         logicg = LogicGates()
@@ -59,11 +60,22 @@ def main():
             # Delete temporary files after use
             delete_temporary_files(zip_file_folder_path)
 
-    elif report_type == "Inverter Pull Down":
-        pass
+    elif report_type == "Inverter Pull Up an Down":
+        uploaded_file = st.file_uploader("Upload a zip file", type="zip")
 
-    elif report_type == "Inverter Pull Up":
-        pass
+        if uploaded_file is not None:
+            st.subheader("Uploaded File Details:")
+            file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type, "FileSize": uploaded_file.size}
+            #st.write(file_details)
+
+            # Call the function to unzip and display files
+            zip_file_folder_path = unzip_and_display_files(uploaded_file)
+            st.write(zip_file_folder_path)
+            inverter_processor = InverterDataProcessor(zip_file_folder_path)
+            inverter_processor.process_files()
+            mean_min_Vout , mean_max_Vout = inverter_processor.calculate_mean_min_Vout()
+            st.write(f"Mean of minimum Vout: {mean_min_Vout}")
+            st.write(f"Mean of maximum Vout: {mean_max_Vout}")
 
     elif report_type == "Ioffmean":
         pass
