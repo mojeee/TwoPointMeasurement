@@ -5,7 +5,7 @@ from io import BytesIO
 import base64
 from two_point.logicgate import LogicGates
 from two_point.inverterpulldown import InverterDataProcessor
-from two_point.inverter_main import Inverter
+from two_point.Inverter import Inverter
 from two_point.th_v import FindVth
 import zipfile
 import os
