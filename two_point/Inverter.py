@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import RendererAgg
 from matplotlib.ticker import FuncFormatter
 import os
 import random
@@ -13,6 +12,7 @@ def get_random_color():
     return "#{:02x}{:02x}{:02x}".format(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
     )
+
 
 class Inverter:
     def __init__(self, folder_path):
@@ -31,11 +31,11 @@ class Inverter:
     def prep_plot(
         self,
         exception_files,
-        separate_plot: bool = False,
+        seprate_plot: bool = False,
         summary_plot: bool = False,
-        gain_plot: bool = False,
+        gain_plot : bool = False,
     ):
-        self.separate_plot = separate_plot
+        self.seperate_plot = seprate_plot
         self.gain_plot = gain_plot
         target_ending = "Inverter.txt"
         matching_files = [
@@ -45,7 +45,7 @@ class Inverter:
         max_abs_values = []
         if matching_files:
             print(f"Files ending with '{target_ending}' exist in the folder:")
-            for file in matching_files:
+            for index , file in enumerate(matching_files):
                 if file in exception_files:
                     continue
                 print(file)
@@ -53,12 +53,12 @@ class Inverter:
                 print(name)
                 data = self._extract_data(file_name=file)
                 if not summary_plot:
-                    self._plot_all(data=data, name=name)
+                    self._plot_all(data=data, name=name, index=index)
                 if not gain_plot:
                     all_data.append(data["Vout"].values)
                 else:
                     all_data.append(data["Vout/Vin"].values)
-
+                
                 max_abs_values.append(np.max(np.abs(data["Vout/Vin"])))
             print("Mean of max absolute values: ", np.mean(max_abs_values))
 
@@ -68,6 +68,19 @@ class Inverter:
         std_data = np.std(all_data, axis=0)
         if summary_plot:
             self._plot_mean_std(data=data, mean_data=mean_data, std_data=std_data)
+       
+        """if not seprate_plot:
+            if self.gain_plot:
+                plt.savefig(os.path.join(self.folder_path, "all_plots"+ "_gain" + ".png"))
+            else:
+                plt.savefig(os.path.join(self.folder_path, "all_plots" + ".png"))
+        else:
+            if self.gain_plot:
+                plt.savefig(os.path.join(self.folder_path, "summary_plots"+ "_gain" + ".png"))
+            else:
+                plt.savefig(os.path.join(self.folder_path, "summary_plots" + ".png"))"""
+
+        
 
     def _extract_data(self, file_name):
         with open(self.folder_path + file_name, "r") as file:
@@ -78,16 +91,18 @@ class Inverter:
             columns=["Vin", "Vout"],
         )
         data = data.apply(pd.to_numeric, errors="coerce")
-        data["Vout/Vin"] = np.gradient(data['Vout'], data['Vin'])
+        #data["Vout/Vin"] = data['Vout'].diff() / data['Vin'].diff()
+        data["Vout/Vin"] =  np.gradient(data['Vout'],data['Vin'])
+    
 
         return data
 
-    def _plot_all(self, data, name, save_fig: bool = False):
-        if self.separate_plot:
+    def _plot_all(self, data, name, index: int, save_fig: bool = False ):
+        if self.seperate_plot:
             fig, ax = plt.subplots()
-        else:
+        elif index == 0:
             fig, ax = plt.subplots()
-
+        
         if self.gain_plot:
             ax.plot(
                 data["Vin"],
@@ -97,8 +112,10 @@ class Inverter:
                 linestyle="-",
                 color=get_random_color(),
             )
-            ax.set(xlabel="Vin (V)", ylabel="Vout/Vin (V)", title="Vout/Vin vs Vin Plot")
-        else:
+            ax.xlabel("Vin (V)")
+            ax.ylabel("Vout/Vin (V)")
+            ax.title("Vout/Vin vs Vin Plot")
+        else: 
             ax.plot(
                 data["Vin"],
                 data["Vout"],
@@ -107,19 +124,31 @@ class Inverter:
                 linestyle="-",
                 color=get_random_color(),
             )
-            ax.set(xlabel="Vin (V)", ylabel="Vout (V)", title="Vout vs Vin Plot")
+            ax.xlabel("Vin (V)")
+            ax.ylabel("Vout (V)")
+            ax.title("Vout vs Vin Plot")
 
+        
+        #plt.yscale("log")
+
+        
         ax.grid(True, linestyle="--", alpha=0.7)
         fig.tight_layout()
         st.pyplot(fig)
+        """if self.seperate_plot:
+            if self.gain_plot:
+                plt.savefig(os.path.join(self.folder_path, name +"_gain" + ".png"))
+            else:
+                plt.savefig(os.path.join(self.folder_path, name + ".png"))"""
 
     def _plot_mean_std(self, data, mean_data, std_data, log_plot: bool = False):
         fig, ax = plt.subplots()
 
+        ax.figure()
         ax.plot(data["Vin"], mean_data, label="Mean gain", color="b", linestyle="-")
 
         if log_plot:
-            ax.set_yscale("log")
+            ax.yscale("log")
 
         ax.fill_between(
             data["Vin"],
@@ -130,15 +159,22 @@ class Inverter:
             label="Std Dev",
         )
 
-        ax.set(xlabel="Vin (V)")
+        ax.xlabel("Vin (V)")
         if self.gain_plot:
-            ax.set(ylabel="Vout/Vin (V)")
-            ax.set_title("Mean Vout/Vin with Std Dev Plot")
+            ax.ylabel("Vout/Vin (V)")
+            ax.title("Mean Vout/Vin with Std Dev Plot")
         else:
-            ax.set(ylabel="Vout (V)")
-            ax.set_title("Mean Vout with Std Dev Plot")
+            ax.ylabel("Vout (V)")
+            ax.title("Mean Vout with Std Dev Plot")
 
         ax.grid(True, linestyle="--", alpha=0.7)
         ax.legend()
         fig.tight_layout()
         st.pyplot(fig)
+
+        
+
+
+
+
+
