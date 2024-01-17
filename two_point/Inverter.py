@@ -100,41 +100,76 @@ class Inverter:
     def _plot_all(self, data, name, index: int, save_fig: bool = False ):
         if self.seperate_plot:
             fig, ax = plt.subplots()
+            if self.gain_plot:
+                ax.plot(
+                    data["Vin"],
+                    data["Vout/Vin"],
+                    label="Vout/Vin vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                ax.set_xlabel("Vin (V)")
+                ax.set_ylabel("Vout/Vin (V)")
+                ax.set_title("Vout/Vin vs Vin Plot")
+                ax.grid(True, linestyle="--", alpha=0.7)
+                fig.tight_layout()
+                st.pyplot(fig)
+            else: 
+                ax.plot(
+                    data["Vin"],
+                    data["Vout"],
+                    label="Vout vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                ax.set_xlabel("Vin (V)")
+                ax.set_ylabel("Vout (V)")
+                ax.set_title("Vout vs Vin Plot")
+                ax.grid(True, linestyle="--", alpha=0.7)
+                fig.tight_layout()
+                st.pyplot(fig)
+
         elif index == 0:
-            fig, ax = plt.subplots()
-        
-        if self.gain_plot:
-            ax.plot(
-                data["Vin"],
-                data["Vout/Vin"],
-                label="Vout/Vin vs Vin",
-                marker="s",
-                linestyle="-",
-                color=get_random_color(),
-            )
-            ax.set_xlabel("Vin (V)")
-            ax.set_ylabel("Vout/Vin (V)")
-            ax.set_title("Vout/Vin vs Vin Plot")
-        else: 
-            ax.plot(
-                data["Vin"],
-                data["Vout"],
-                label="Vout vs Vin",
-                marker="s",
-                linestyle="-",
-                color=get_random_color(),
-            )
-            ax.set_xlabel("Vin (V)")
-            ax.set_ylabel("Vout (V)")
-            ax.set_title("Vout vs Vin Plot")
+            self.fig, self.ax = plt.subplots()
+            if self.gain_plot:
+                self.ax.plot(
+                    data["Vin"],
+                    data["Vout/Vin"],
+                    label="Vout/Vin vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                self.ax.set_xlabel("Vin (V)")
+                self.ax.set_ylabel("Vout/Vin (V)")
+                self.ax.set_title("Vout/Vin vs Vin Plot")
+                self.ax.grid(True, linestyle="--", alpha=0.7)
+                self.fig.tight_layout()
+                st.pyplot(self.fig)
+            else: 
+                self.ax.plot(
+                    data["Vin"],
+                    data["Vout"],
+                    label="Vout vs Vin",
+                    marker="s",
+                    linestyle="-",
+                    color=get_random_color(),
+                )
+                self.ax.set_xlabel("Vin (V)")
+                self.ax.set_ylabel("Vout (V)")
+                self.ax.set_title("Vout vs Vin Plot")
+                self.ax.grid(True, linestyle="--", alpha=0.7)
+                self.fig.tight_layout()
+                st.pyplot(self.fig)
 
         
         #plt.yscale("log")
 
         
-        ax.grid(True, linestyle="--", alpha=0.7)
-        fig.tight_layout()
-        st.pyplot(fig)
+        
+        
         """if self.seperate_plot:
             if self.gain_plot:
                 plt.savefig(os.path.join(self.folder_path, name +"_gain" + ".png"))
