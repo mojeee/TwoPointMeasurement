@@ -7,7 +7,6 @@ import os
 import random
 import streamlit as st
 
-_lock = RendererAgg.lock
 
 def get_random_color():
     # Generate a random color in the format "#RRGGBB"
