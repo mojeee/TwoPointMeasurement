@@ -68,7 +68,10 @@ class Inverter:
         std_data = np.std(all_data, axis=0)
         if summary_plot:
             self._plot_mean_std(data=data, mean_data=mean_data, std_data=std_data)
-       
+        
+        if self.fig:
+            st.pyplot(self.fig)
+        
         """if not seprate_plot:
             if self.gain_plot:
                 plt.savefig(os.path.join(self.folder_path, "all_plots"+ "_gain" + ".png"))
@@ -147,7 +150,7 @@ class Inverter:
                 self.ax.set_title("Vout/Vin vs Vin Plot")
                 self.ax.grid(True, linestyle="--", alpha=0.7)
                 self.fig.tight_layout()
-                st.pyplot(self.fig)
+                
             else: 
                 self.ax.plot(
                     data["Vin"],
@@ -162,7 +165,7 @@ class Inverter:
                 self.ax.set_title("Vout vs Vin Plot")
                 self.ax.grid(True, linestyle="--", alpha=0.7)
                 self.fig.tight_layout()
-                st.pyplot(self.fig)
+
 
         
         #plt.yscale("log")
