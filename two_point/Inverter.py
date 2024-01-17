@@ -68,7 +68,7 @@ class Inverter:
         if summary_plot:
             self._plot_mean_std(data=data, mean_data=mean_data, std_data=std_data)
        
-        if not seprate_plot:
+        """if not seprate_plot:
             if self.gain_plot:
                 plt.savefig(os.path.join(self.folder_path, "all_plots"+ "_gain" + ".png"))
             else:
@@ -77,7 +77,7 @@ class Inverter:
             if self.gain_plot:
                 plt.savefig(os.path.join(self.folder_path, "summary_plots"+ "_gain" + ".png"))
             else:
-                plt.savefig(os.path.join(self.folder_path, "summary_plots" + ".png"))
+                plt.savefig(os.path.join(self.folder_path, "summary_plots" + ".png"))"""
 
         plt.show()
 

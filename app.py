@@ -5,6 +5,7 @@ from io import BytesIO
 import base64
 from two_point.logicgate import LogicGates
 from two_point.inverterpulldown import InverterDataProcessor
+from two_point.inverter_main import Inverter
 from two_point.th_v import FindVth
 import zipfile
 import os
@@ -30,7 +31,32 @@ def delete_temporary_files(folder_path):
 def main():
     st.title("KIT INT Application")
 
-    report_type = st.sidebar.selectbox("Select a Report Type", ("Logic Gates", "Thershhold Voltage", "Inverter Pull Up an Down","Ioffmean","Ioff"))
+    report_type = st.sidebar.selectbox("Select a Report Type", ("Invertergain","Logic Gates", "Thershhold Voltage", "Inverter Pull Up an Down","Ioffmean","Ioff"))
+
+    if report_type == "Invertergain":
+        uploaded_file = st.file_uploader("Upload a zip file", type="zip")
+
+        if uploaded_file is not None:
+            st.subheader("Uploaded File Details:")
+            file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type, "FileSize": uploaded_file.size}
+            #st.write(file_details)
+
+            # Call the function to unzip and display files
+            zip_file_folder_path = unzip_and_display_files(uploaded_file)
+            st.write(zip_file_folder_path)
+            summary_plot = st.sidebar.checkbox('Summary Plot')
+            seperate_plot = st.sidebar.checkbox('Seperate Plot')
+            gain_plot = st.sidebar.checkbox('Gain Plot')
+            inverterplot = Inverter(
+            folder_path=zip_file_folder_path
+            )
+            inverterplot.prep_plot(
+                summary_plot=summary_plot,
+                seprate_plot=seperate_plot,
+                gain_plot=gain_plot,
+                exception_files=[]
+            )
+
 
     if report_type == "Logic Gates":
         logicg = LogicGates()
