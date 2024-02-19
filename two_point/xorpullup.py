@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
-folder_path = "C:/Users/ghaza/OneDrive/Desktop/thesis/invertergain/"
+folder_path = "C:/Users/ghaza/OneDrive/Desktop/thesis/xorswing/"
 file_names = [
     f
     for f in os.listdir(folder_path)
@@ -14,16 +14,21 @@ file_names = [
 all_max_Vout = []
 
 for name in file_names:
-    if name.endswith("Inverter.txt"):
+    if name.endswith("transient_1,0V.dat"):
         with open(os.path.join(folder_path, name), "r") as file:
             lines = file.readlines()
 
         data = pd.DataFrame(
-            [line.split() for line in lines[8:]],
-            columns=["Vin", "Vout"],
+            [line.split() for line in lines[2:]],
+            columns=["time [s]","Vin1 [V]","Vin2 [V]","Vout [V]"],
         )
-        data = data.apply(pd.to_numeric, errors="coerce")
+        
+        data = data.replace({',': '.'}, regex=True)
 
-        all_max_Vout.append(data['Vout'].max())
-    
+        #print(data)
+        data = data.apply(pd.to_numeric, errors="coerce")
+        #print(data)
+        all_max_Vout.append(data['Vout [V]'].max()) 
+
+all_max_Vout = [value for value in all_max_Vout if not pd.isna(value)]
 print(np.mean(all_max_Vout))
