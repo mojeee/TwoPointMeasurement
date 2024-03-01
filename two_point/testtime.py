@@ -89,6 +89,7 @@ def _find_interpolation_points(
     gap_indices_max,
     gap_times_max,
     vout_within_max_threshold,
+    calc="50%",
 ):
     # Find the average vout value between the gaps
     if voltage == "vout":
@@ -119,7 +120,12 @@ def _find_interpolation_points(
         status = "fall"
     max_avg = selected_max_data[voltage].mean()
     # print("Max average:", max_avg)
-    total_avg = (min_avg + max_avg) / 2
+    if calc == "50%":
+        total_avg = (min_avg + max_avg) / 2
+    if calc == "80%":
+        total_avg = abs(min_avg - max_avg) * 0.8 + min_avg
+    if calc == "20%":
+        total_avg = abs(min_avg - max_avg) * 0.2 + min_avg
     # print("Total average:", total_avg)
     # Plot the rest with different color
     other_indices = df.index.difference(
@@ -172,7 +178,7 @@ def _fit_line(
     return m, c, total_avg_time
 
 
-def calculate_time(df, measured_voltage, show_plot=True):
+def calculate_time(df, measured_voltage, show_plot=True, calc="50%"):
 
     vout_within_min_threshold, vout_within_max_threshold = _find_min_max_points(
         df, voltage=measured_voltage
@@ -200,6 +206,7 @@ def calculate_time(df, measured_voltage, show_plot=True):
         gap_indices_max,
         gap_times_max,
         vout_within_max_threshold,
+        calc,
     )
     m, c, total_avg_time = _fit_line(
         selected_points,
@@ -231,6 +238,7 @@ def calculate_time(df, measured_voltage, show_plot=True):
         gap_indices_max,
         gap_times_max,
         vout_within_max_threshold,
+        calc,
     )
 
     m, c, total_avg_time = _fit_line(
@@ -282,6 +290,17 @@ def main():
     print(f"The time delay at {res['vout']['rise'][0]} is: {time_1*1e3} mS")
     time_2 = abs(res["vout"]["fall"][1] - res["vin1"]["rise"][1])
     print(f"The time delay at {res['vout']['fall'][0]} is: {time_2*1e3} mS")
+
+    avg11, status11, avg21, status21, occurance_time11, occurance_time21 = (
+        calculate_time(df, "vout", show_plot, calc="80%")
+    )
+    avg12, status12, avg22, status22, occurance_time12, occurance_time22 = (
+        calculate_time(df, "vout", show_plot, calc="20%")
+    )
+    time_3 = abs(avg11 - avg12)
+    print(f"The time delay of vout between 20% and 80% at {occurance_time11} is: {time_3*1e3} mS")
+    time_4 = abs(avg21 - avg22)
+    print(f"The time delay of vout between 20% and 80% at {occurance_time21} is: {time_4*1e3} mS")
 
 
 if __name__ == "__main__":
