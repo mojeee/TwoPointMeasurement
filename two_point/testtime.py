@@ -16,7 +16,17 @@ def _read_data(path):
     df = df.apply(pd.to_numeric, errors="coerce")
 
     # Rename the columns to lowercase
-    df.columns = ["Time", "vin1", "vout"]
+    df.columns = ["Time", "vin1", "vin2", "vout"]
+    # plot vout against time
+    plt.figure(figsize=(10, 6))
+    plt.plot(df["Time"], df["vout"], color="gray", label="Raw Data")
+    plt.xlabel("Time")
+    plt.ylabel("vout")
+    plt.title("vout vs Time")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+    
     return df
 
 
@@ -98,6 +108,7 @@ def _find_interpolation_points(
     else:
         min_index = start_index_min
         max_index = 1
+    print("Min index:", min_index)
     min_second_gap_time = gap_times_min.iloc[min_index]
     # print("Second min gap time:", min_second_gap_time)
     max_second_gap_time = gap_times_max.iloc[max_index]
@@ -273,7 +284,7 @@ def calculate_time(df, measured_voltage, show_plot=True, calc="50%"):
 
 def main():
     measurements = ["vout", "vin1"]
-    path = "C:/Users/Hiva/Desktop/Virevo-project/TwoPointMeasurement/data/M1E_tran_VDD_1,0V.DAT"
+    path = "C:/Users/ghaza/OneDrive/Desktop/thesis/nandswing/NAND2C_transient_1,0V.dat"
     df = _read_data(path)
     show_plot = False
     res = {}
